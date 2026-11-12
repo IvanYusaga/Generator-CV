@@ -243,6 +243,16 @@
             </form>
         </div>
 
+        <!-- Link ke Halaman Register -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-slate-600">
+                Belum punya akun?
+                <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
+                    Daftar sekarang
+                </a>
+            </p>
+        </div>
+
         <!-- Footer / Hak Cipta -->
         <p class="mt-8 text-center text-xs text-slate-500">
             &copy; {{ date('Y') }} {{ config('app.name', 'CV Generator') }}. Hak cipta dilindungi.
