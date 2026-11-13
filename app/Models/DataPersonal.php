@@ -21,6 +21,7 @@ class DataPersonal extends Model
         'kota',
         'provinsi',
         'negara',
+        'foto',
     ];
 
     /**
