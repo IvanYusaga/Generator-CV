@@ -46,4 +46,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Relasi ke DataPersonal.
+     */
+    public function dataPersonal(): HasOne
+    {
+        return $this->hasOne(DataPersonal::class, 'user_id');
+    }
 }
