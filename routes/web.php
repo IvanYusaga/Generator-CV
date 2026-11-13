@@ -20,6 +20,9 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-// CV Routes
-Route::get('/cv', [CVController::class, 'index'])
-    ->name('cv.preview');
+Route::middleware('auth')->group(function () {
+    // Dashboard Route
+    Route::get('/dashboard', function () {return view('dashboard');})->name('dashboard');
+    // CV Routes
+    Route::get('/cv', [CVController::class, 'index'])->name('cv.preview');
+});
