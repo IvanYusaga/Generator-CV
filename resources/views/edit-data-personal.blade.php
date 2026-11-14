@@ -131,11 +131,56 @@
                 </div>
             </div>
 
-            <form action="{{ route('data-personal.update') }}" method="POST" class="p-6">
+            <form action="{{ route('data-personal.update') }}" method="POST" enctype="multipart/form-data" class="p-6">
                 @csrf
                 @method('PUT')
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Foto Profil -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            Foto Profil
+                            <span class="text-slate-400 font-normal">(opsional)</span>
+                        </label>
+                        
+                        <div class="flex flex-col sm:flex-row items-center gap-5 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                            <!-- Preview Foto -->
+                            <div class="relative w-24 h-24 rounded-full overflow-hidden border-2 border-slate-200 bg-white flex items-center justify-center shrink-0 shadow-sm">
+                                <img id="preview-image" 
+                                     src="{{ !empty($dataPersonal?->foto) ? asset('storage/' . $dataPersonal->foto) : '' }}" 
+                                     alt="Preview Foto" 
+                                     class="w-full h-full object-cover {{ !empty($dataPersonal?->foto) ? '' : 'hidden' }}"
+                                     onerror="this.classList.add('hidden'); document.getElementById('preview-placeholder')?.classList.remove('hidden');">
+                                
+                                <div id="preview-placeholder" class="text-center p-2 {{ !empty($dataPersonal?->foto) ? 'hidden' : '' }}">
+                                    <svg class="mx-auto h-9 w-9 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Upload Button & Keterangan -->
+                            <div class="flex-1 space-y-2 text-center sm:text-left">
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                                    <label for="foto" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 rounded-lg border border-indigo-200 shadow-sm transition-colors">
+                                        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        <span>Pilih Foto</span>
+                                    </label>
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpg, .jpeg" class="hidden">
+                                    <span id="file-name" class="text-xs text-slate-500 truncate max-w-xs">
+                                        {{ !empty($dataPersonal?->foto) ? 'Foto tersimpan' : 'Belum ada foto dipilih' }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500">Maks. 2 MB dengan format PNG, JPG, atau JPEG.</p>
+                                @error('foto')
+                                    <p class="text-xs text-red-500 font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Nama -->
                     <div class="md:col-span-2">
                         <label for="nama" class="block text-sm font-medium text-slate-700 mb-1.5">
@@ -270,6 +315,45 @@
         </div>
     </footer>
 
+    <script>
+        const fotoInput = document.getElementById('foto');
+        const previewImage = document.getElementById('preview-image');
+        const previewPlaceholder = document.getElementById('preview-placeholder');
+        const fileName = document.getElementById('file-name');
+
+        if (fotoInput) {
+            fotoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validasi tipe file
+                    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Format file tidak didukung! Harap unggah file PNG, JPG, atau JPEG.');
+                        this.value = '';
+                        return;
+                    }
+
+                    // Validasi ukuran sisi klien (maksimal 2MB = 2 * 1024 * 1024 bytes)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('Ukuran file maksimal 2 MB!');
+                        this.value = '';
+                        return;
+                    }
+
+                    fileName.textContent = file.name;
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        previewImage.src = event.target.result;
+                        previewImage.classList.remove('hidden');
+                        if (previewPlaceholder) {
+                            previewPlaceholder.classList.add('hidden');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 
