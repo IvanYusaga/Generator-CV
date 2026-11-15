@@ -5,6 +5,7 @@ use App\Http\Controllers\CVController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DataPersonalController;
+use App\Http\Controllers\TemplateHeaderController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -30,4 +31,7 @@ Route::middleware('auth')->group(function () {
     // Data Personal Routes
     Route::get('/data-personal/edit', [DataPersonalController::class, 'edit'])->name('data-personal.edit');
     Route::put('/data-personal', [DataPersonalController::class, 'update'])->name('data-personal.update');
+
+    // Template Header Routes
+    Route::resource('template-header', TemplateHeaderController::class);
 });

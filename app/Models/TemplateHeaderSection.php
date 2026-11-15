@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Models;
@@ -26,3 +25,4 @@ class TemplateHeaderSection extends Model
         );
     }
 }
+
